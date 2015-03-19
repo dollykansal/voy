@@ -6,16 +6,20 @@
 <link rel="stylesheet" type="text/css" href="static/stylesheets/custom.css">
 
 <!----------------------------------------- bootstrap code --------------------------------------------------->
-<script src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js" id="sap-ui-bootstrap"
+<script src="resources/sap-ui-core.js" id="sap-ui-bootstrap"
 	data-sap-ui-libs="sap.ui.commons,sap.ui.table,sap.viz,sap.suite.ui.commons,sap.ui.ux3"
 	data-sap-ui-xx-bindingSyntax="complex"
 	data-sap-ui-theme="sap_goldreflection" data-sap-ui-debug=true>
 </script>
 <!------------------------------- include javascript files with UI elements ---------------------------------->
-<!-- <script src="static/javascripts/voyageDataService.js"></script>  -->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="static/javascripts/voyageDataService.js"></script> 
 <script src="static/javascripts/vesselavail.js"></script> 
 <script src="static/javascripts/createTable.js"></script>
 <script src="static/javascripts/frtsim.js"></script>
+<script src="static/javascripts/ganttchart.js"></script>
+<script src="static/javascripts/stackedChartH.js"></script>
+<script src="static/javascripts/chart.js"></script>
 <script src="static/javascripts/vesselMaster.js"></script>
 <script src="static/javascripts/header.js"></script>
 <script src="static/javascripts/final_cargo.js"></script>
@@ -23,12 +27,20 @@
 <script src="static/javascripts/final_vessel.js"></script>
 <script src="static/javascripts/demandLeft.js"></script>
 <script src="static/javascripts/bunk_sim.js"></script>
+<script src="static/javascripts/bunkCal.js"></script>
 <script src="static/javascripts/estDashboard.js"></script>
 <script src="static/javascripts/summary.js"></script>
+<script type="text/javascript"
+	src="static/vendor/fusioncharts-suite-xt/js/fusioncharts.js"></script>
+<script type="text/javascript"
+	src="static/vendor/fusioncharts-suite-xt/js/fusioncharts.widgets.js"></script>
+<script type="text/javascript"
+	src="static/vendor/fusioncharts-suite-xt/js/themes/fusioncharts.theme.fint.js"></script>
 		<!-- add sap.ui.table,sap.ui.ux3 and/or other libraries to 'data-sap-ui-libs' if required -->
 
 		<script>
 				window.vesselMaster = JSON.parse('${vesselMaster}');
+				window.demands = JSON.parse('${demands}');
 				sap.ui.localResources("static/voyageest");
 /* 				var view = sap.ui.view({id:"idVoyage11", viewName:"voyageest.Voyage1", type:sap.ui.core.mvc.ViewType.JS});
 				view.placeAt("content"); */
@@ -51,7 +63,15 @@
 					             				new sap.ui.ux3.NavigationItem({key:"wi_est_overview",text:"Overview"}),
 					             				new sap.ui.ux3.NavigationItem({key:"wi_est_create",text:"New Estimate"})
 					              				]
-					              })   
+					              }),
+					              new sap.ui.ux3.NavigationItem("wi_voy_id",{
+					            	  key: "Voyage",
+					            	  text: "Voyage",
+					            	  subItems:[
+					             				new sap.ui.ux3.NavigationItem({key:"wi_voy_overview",text:"Overview"}),
+					             				new sap.ui.ux3.NavigationItem({key:"wi_voy_create",text:"New Voyage"})
+					              				]
+					              })
 					              ],
 /*  					  worksetItemSelected: function (e){
 						  //this.removeAllContent();
@@ -84,8 +104,6 @@
   							oEvent.preventDefault();
   							return;
   						}
-  						console.log("workitem selected:",itemKey);
-  						//console.log("content of home:",getContent(itemKey));
   						oShell.setContent(getContent(itemKey));
 						  
 					  },  
@@ -101,17 +119,17 @@
 				function getContent(id) {
 					if (!mContent[id]) {
 						if (id == "wi_est_overview") {
-							console.log("new view",id );
 							mContent[id] = new estDash();
 						}else if (id == "wi_est_create") {
-							console.log("new view",id );
 							mContent[id] = sap.ui.getCore().byId("estViewId");
 						}else if (id == "Home") {
-							console.log("home view",id );
 							mContent[id] = sap.ui.getCore().byId("homeViewId");
+						}else if (id == "wi_voy_create") {
+							mContent[id] = sap.ui.getCore().byId("estViewId");
+						}else if (id == "wi_voy_overview") {
+							mContent[id] = new estDash();
 						}
 					}else{
-						console.log("buffered view",id );
 					}
 					return mContent[id];
 				}
@@ -298,9 +316,10 @@
 				
 				oShell.addToolPopup(oFrtSim);
 				oShell.addToolPopup(oBunkSim);
- 				//mContent["Home"] = sap.ui.getCore().byId("homeViewId");
- 				mContent["wi_est_create"] = sap.ui.getCore().byId("estViewId")
-				oShell.addContent(mContent["wi_est_create"]); 
+ 				mContent["Home"] = sap.ui.getCore().byId("homeViewId");
+ 				oShell.addContent(mContent["Home"]);
+ 				//mContent["wi_est_create"] = sap.ui.getCore().byId("estViewId")
+				//oShell.addContent(mContent["wi_est_create"]); 
 				oShell.placeAt("content");
 		</script>
 

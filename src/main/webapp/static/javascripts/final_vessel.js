@@ -138,12 +138,22 @@ var Vessel = function(oController){
 			id: "Panel1",
 			width : "100%"
 		});
-
+		//Function to create the dialog
+		function openDialog() {
+		  var oDialog1 = new sap.ui.commons.Dialog();
+		  oDialog1.setTitle("Vessel Capacity Chart");
+		  oDialog1.addContent((new sap.ui.core.HTML({content:"<div id='ganttContainer' style='height:100%;width:100%;'></div>"})));
+		  oDialog1.addButton(new sap.ui.commons.Button({text: "OK", press:function(){oDialog1.close();}}));
+		  oDialog1.open();
+		  window.chartVesselHelper.createGanttChart();
+		};
+		
 		oPanel.setText("Selected Vessel Particular");
 		var oButton3 = 		new sap.ui.commons.Button({
 			text : "Vessel Capacity Graph",
 			icon : "static/images/graph.jpg",
-			lite : true
+			lite : true,
+			press : function() { openDialog(); }
 		});
 		oButton3.addStyleClass("myGraphBtn");
 	// create a layout sap.ui.commons.layout.HAlign.Right

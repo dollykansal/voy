@@ -51,4 +51,5 @@
 		<property name="ignoreAcceptHeader" value="true" />
 
 	</bean>
+	<bean id="gson" class="com.google.gson.Gson"></bean>
 </beans>

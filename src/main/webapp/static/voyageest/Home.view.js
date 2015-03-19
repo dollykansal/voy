@@ -44,6 +44,10 @@ sap.ui.jsview("static/voyageest.Home", {
 		oPanelVoyage.setAreaDesign(sap.ui.commons.enums.AreaDesign.Plain);
 		oPanelVoyage.setBorderDesign(sap.ui.commons.enums.BorderDesign.Box);
 		oPanelVoyage.addContent(new sap.ui.commons.Image({src: 'static/images/image_green.gif'}));
+		oPanelVoyage.attachBrowserEvent("click", function(){
+			sap.ui.getCore().byId("myShell").setSelectedWorksetItem("wi_voy_id");
+			sap.ui.getCore().byId("myShell").setContent(getContent("wi_voy_overview"));
+		})
 		
 		var oPanelDemand = new sap.ui.commons.Panel("tileDemand",{
 			showCollapseIcon: false,

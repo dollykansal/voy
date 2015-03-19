@@ -1,5 +1,5 @@
 package com.ep360.data.models;
-// Generated Mar 6, 2015 9:55:17 PM by Hibernate Tools 4.3.1
+// Generated Mar 16, 2015 10:37:31 PM by Hibernate Tools 4.3.1
 
 
 import javax.persistence.Column;
@@ -12,11 +12,7 @@ import javax.persistence.Embeddable;
 public class VesselMasterId  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -5395470727132881478L;
-	private String vesselName;
+     private String vesselName;
      private String vesselType;
 
     public VesselMasterId() {

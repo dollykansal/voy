@@ -9,7 +9,6 @@ var Vesselavail = function(oController){
 //	{vesselName: "Gemini", laycan: "2", vesselType:"TCT",dwt:"5520",draft:"230.00",ballast:"90",laden:"60",doDieselType:"MGO",dosea:"5",doidle:"10",dowork:"35",lsdoDieselType:"DMB",lsdosea:"10",lsdoidle:"16",lsdowork:"21",fotype:"80",foballast:"25",foladen:"25",foidle:"1",fowork:"7",lsfotype:"180",lsfoballast:"20",lsfoladen:"25",lsfoidle:"1",lsfowork:"7"},
 //];
 var aData = window.vesselMaster;
-console.log("aData",aData);
 //Create an instance of the table control
 var oTableVess = window.helper.createTable({title:"Vessel Availability"});
 
@@ -18,7 +17,6 @@ var oControl = new sap.ui.commons.Link({
 	press: function() {oDialogVessel.open();}
 });
 oControl.bindProperty("text", "id/vesselName");
-console.log("!!!!!!!!!!!!!!!",oControl);
 oTableVess.addColumn(new sap.ui.table.Column({
 	label: new sap.ui.commons.Label({text: "Vessel Name"}), 
 	template: oControl, //sortProperty: "id.vesselName", 
@@ -53,7 +51,6 @@ oTableVess.attachRowSelectionChange(function(oEvent) {
 	oController.selectVessel(rowNo);
 });
 
-console.log("no. of rows ", oTableVess.getBinding("rows").getLength());
  return oTableVess;
  //oTableVess.placeAt("vesselavail");
 };

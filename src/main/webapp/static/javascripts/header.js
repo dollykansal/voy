@@ -1,6 +1,4 @@
 var Header = function(){
-
-	console.log("calling header");
 	var oData = { 
 			"items": [{ 
 				"type": "Vessel", "name": "Seagate", "href": "#",
@@ -91,7 +89,7 @@ var Header = function(){
 	var oLink1 = new sap.ui.commons.Link({
 		text: "Seagate", 
 		tooltip: oQuickViewTemplate,
-		press: function() {alert('Alert from ' + oLink1.getText());}});
+		press: function() {return oQuickViewTemplate}});
 	
 /*	var oForm1 = new sap.ui.layout.form.Form("F1",{
 		title: new sap.ui.core.Title({text: "Vessel Header", tooltip: "Vessel Header", height: "20%"}),
@@ -138,6 +136,11 @@ var Header = function(){
 						new sap.ui.commons.TextField({value:"DMA"})
 			]});*/
 //layout: oLayout1
+	var oButtonSave = 		new sap.ui.commons.Button({
+		text : "Save Estimate",
+		style: sap.ui.commons.ButtonStyle.Accept,
+		press: function() {window.dataService.saveData(); }
+	});
 	
 	var oForm1 = new sap.ui.layout.form.Form("F1",{
 		//title: new sap.ui.core.Title({text: "Selected Vessel", tooltip: "Title tooltip"}),
@@ -163,8 +166,9 @@ var Header = function(){
 									new sap.ui.commons.TextField({value:"DMB",editable : false}),
 									new sap.ui.commons.Label({text:"DO:", textAlign : sap.ui.core.TextAlign.Right}),
 									new sap.ui.commons.TextField({value:"25",editable : false}),
-									new sap.ui.commons.Label({text:"LSDO:",textAlign : sap.ui.core.TextAlign.Right}),
-									new sap.ui.commons.TextField({value:"20",editable : false})
+									//new sap.ui.commons.Label({text:"LSDO:",textAlign : sap.ui.core.TextAlign.Right}),
+									//new sap.ui.commons.TextField({value:"20",editable : false}),
+									oButtonSave
 						]
 					})
 					/*new sap.ui.layout.form.FormElement({

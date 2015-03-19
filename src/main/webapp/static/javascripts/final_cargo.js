@@ -5,15 +5,28 @@ var Cargo = function(oController){
 	                  ];
 	var oModelCargo = new sap.ui.model.json.JSONModel();
 	oModelCargo.setData({modelData: aDataCargo});
+	sap.ui.getCore().setModel(oModelCargo,"cargo")
 	//Create a panel instance
 	var oPanelCargo = new sap.ui.commons.Panel({
 		width : "100%"
 	});
 	oPanelCargo.setText("Cargo");
+	
+	//Function to create the dialog for chart
+	function openDialog() {
+	  var oDialog1 = new sap.ui.commons.Dialog();
+	  oDialog1.setTitle("Cargo Chart");
+	  oDialog1.addContent((new sap.ui.core.HTML({content:"<div id='chartContainer' style='height:100%;width:100%;'></div>"})));
+	  oDialog1.addButton(new sap.ui.commons.Button({text: "OK", press:function(){oDialog1.close();}}));
+	  oDialog1.open();
+	  window.chartCargoHelper.createGanttChart();
+	};
+	
 	var oButton2 = 		new sap.ui.commons.Button({
 		text : "Cargo Status Graph",
 		icon : "static/images/graph.jpg",
-		lite : true
+		lite : true,
+		press : function() { openDialog(); }
 	});
 	oButton2.addStyleClass("myGraphBtn");
 
@@ -81,14 +94,12 @@ var Cargo = function(oController){
 			        new sap.ui.commons.Button({text: "Move up", press: function() 
 			        	{ 
 			        	var idx = oTableCargo.getSelectedIndex();
-			        	console.log("index <<<<<",idx);
 			        	if (idx != 0) {
 //			        		var data = oModelCargo.getData()['modelData']; 
 			        		var temp = aDataCargo[idx-1]; //2
 			        		aDataCargo[idx-1] = aDataCargo[idx]; //3
 			        		aDataCargo[idx]= temp; //2
 				        	oModelCargo.setData({modelData: aDataCargo}); // Set Model
-				        	console.log(oModelCargo.getData()["modelData"]);
 				        	oModelCargo.refresh();
 			        	} else {
 			        		alert("Please select a row!");
@@ -194,18 +205,11 @@ var Cargo = function(oController){
 				var rev = (data[rowIndex]['qty'] * data[rowIndex]['frt']);
 				data[rowIndex]['rev'] = rev;
 			}
+			
 			model.setData({modelData: data});
 			model.refresh();
-			if(data[rowIndex]['addComm']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var addComm = (data[rowIndex]['addComm'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['brkge']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var brkge = (data[rowIndex]['brkge'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['frtTax']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var frtTax = (data[rowIndex]['frtTax'] * data[rowIndex]['rev'])/100;
-			}
-			oController.onCargoChange(addComm,brkge,frtTax,rev,null);
+			
+			oController.calTotalRev();
 		}
 	});
 	oCarTabqty.bindProperty("value", "qty");
@@ -226,16 +230,8 @@ var Cargo = function(oController){
 			}
 			model.setData({modelData: data});
 			model.refresh();
-			if(data[rowIndex]['addComm']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var addComm = (data[rowIndex]['addComm'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['brkge']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var brkge = (data[rowIndex]['brkge'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['frtTax']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var frtTax = (data[rowIndex]['frtTax'] * data[rowIndex]['rev'])/100;
-			}
-			oController.onCargoChange(addComm,brkge,frtTax,rev,null);
+			
+			oController.calTotalRev();
 		}
 	});
 	oCarTabfrt.bindProperty("value", "frt");
@@ -283,16 +279,8 @@ var Cargo = function(oController){
 			}
 			model.setData({modelData: data});
 			model.refresh();
-			if(data[rowIndex]['addComm']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var addComm = (data[rowIndex]['addComm'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['brkge']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var brkge = (data[rowIndex]['brkge'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['frtTax']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var frtTax = (data[rowIndex]['frtTax'] * data[rowIndex]['rev'])/100;
-			}
-			oController.onCargoChange(addComm,brkge,frtTax,data[rowIndex]['rev'],null);
+			
+			oController.calTotalRev();
 		}
 	});
 	oCarTabrev.bindProperty("value", "rev");
@@ -305,23 +293,14 @@ var Cargo = function(oController){
 	var oCarTabAcomm = new sap.ui.commons.TextField({   
 		id: "oCarTabAcomm",
 		change : function(oEvent){
-			var changedValue = this.getValue();
+/*			var changedValue = this.getValue();
 			var id = this.getId();
 			var idArr = id.split("-");
 			var rowIndex = idArr[2].split("row")[1];
 			var model = oTableCargo.getModel();
 			var data = oTableCargo.getModel().getData()['modelData'];
-			data[rowIndex]['addComm']=changedValue;
-			if(data[rowIndex]['addComm']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var addComm = (data[rowIndex]['addComm'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['brkge']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var brkge = (data[rowIndex]['brkge'] * data[rowIndex]['rev'])/100;
-			}
-			if(data[rowIndex]['frtTax']!=undefined&&data[rowIndex]['rev']!=undefined){
-				var frtTax = (data[rowIndex]['frtTax'] * data[rowIndex]['rev'])/100;
-			}
-			oController.onCargoChange(addComm,brkge,frtTax,data[rowIndex]['rev'],null);
+			data[rowIndex]['addComm']=changedValue;*/
+			oController.calTotalRev();
 		}
 	});
 	oCarTabAcomm.bindProperty("value", "addComm");
@@ -335,7 +314,7 @@ var Cargo = function(oController){
 	var oCarTabBrkg = new sap.ui.commons.TextField({   
 		id: "oCarTabBrkg",
 		change : function(oEvent){
-			var changedValue = this.getValue();
+/*			var changedValue = this.getValue();
 			var id = this.getId();
 			var idArr = id.split("-");
 			var rowIndex = idArr[2].split("row")[1];
@@ -345,7 +324,9 @@ var Cargo = function(oController){
 			if(data[rowIndex]['brkge']!=undefined&&data[rowIndex]['rev']!=undefined){
 				var brkge = (data[rowIndex]['brkge'] * data[rowIndex]['rev'])/100;
 			}
-			oController.onCargoChange(null, brkge,null,null,null);
+			oController.onCargoChange(null, brkge,null,null,null);*/
+			
+			oController.calTotalRev();
 		}
 	});
 	oCarTabBrkg.bindProperty("value", "brkge");
@@ -358,7 +339,7 @@ var Cargo = function(oController){
 	var oCarTabFrtTax = new sap.ui.commons.TextField({   
 		id: "oCarTabFrtTax",
 		change : function(oEvent){
-			var changedValue = this.getValue();
+/*			var changedValue = this.getValue();
 			var id = this.getId();
 			var idArr = id.split("-");
 			var rowIndex = idArr[2].split("row")[1];
@@ -368,7 +349,9 @@ var Cargo = function(oController){
 			if(data[rowIndex]['frtTax']!=undefined&&data[rowIndex]['rev']!=undefined){
 				var frtTax = (data[rowIndex]['frtTax'] * data[rowIndex]['rev'])/100;
 			}
-			oController.onCargoChange(null,null, frtTax,null,null);
+			oController.onCargoChange(null,null, frtTax,null,null);*/
+			
+			oController.calTotalRev();
 		}
 	});
 	oCarTabFrtTax.bindProperty("value", "frtTax");
@@ -382,8 +365,7 @@ var Cargo = function(oController){
 	var oCarTabLinTerm = new sap.ui.commons.TextField({   
 		id: "oCarTabLinTerm",
 		change : function(oEvent){
-			var changedValue = this.getValue();
-			oController.onCargoChange(null,null, null,null,changedValue);
+			oController.calTotalLinTerm();
 		}
 	});
 	oCarTabLinTerm.bindProperty("value", "linTerm");
@@ -404,19 +386,14 @@ var Cargo = function(oController){
 		sap.ui.table.Table.prototype.onAfterRendering.apply(this, arguments);
 		$('#cargo').droppable({
 			drop:function(event, ui){
-				console.log(ui);
 				var text1 = null;
 				var text2 = null;
 				var text3 = null;
 				var text4 = null;
 
 				if(ui.helper.context.children[1]==undefined){
-					console.log("entering");
 					var id = ui.helper.context.id;
 					$("#"+id+"-hdr").trigger("click");
-//					console.log("#"+id+"-cont span");
-//					console.log(ui.helper.context.children[1].children);
-					console.log($($("#"+id+"-cont span")));
 					setTimeout(function(){
 						text1 = $($("#"+id+"-cont span")[0]).text();
 						text2 = $($("#"+id+"-cont span")[1]).text();
@@ -473,7 +450,6 @@ var Cargo = function(oController){
 					var portModelData = sap.ui.getCore().getModel("port").getData()['modelData']; 
 					var rowObj = oController.checkIfRowExist(portModelData,rowCount,"Loading");
 					var rowCount1   = portModelData.length;   //4 
-					console.log("row obj",rowObj);
 					if(rowObj["result"]){
 						var prod = rowObj["product"];
 						prod['coord'] = text3;
@@ -498,8 +474,6 @@ var Cargo = function(oController){
 			}
 		});
 	};
-
-	window.cargo = oTableCargo;
 	oPanelCargo.addContent(oTableCargo);
 	return oPanelCargo;
 };

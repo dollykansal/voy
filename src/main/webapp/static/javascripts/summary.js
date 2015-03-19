@@ -37,12 +37,25 @@ var summary = function(oController){
 		tooltip: 'Total bunker expense for this voyage'
 	});
 
-	var oInput1 = new sap.ui.commons.TextField({
+	//Function to create the dialog
+	var oDialogBunkFragment = sap.ui.jsfragment("bunkCal.fragments.JSFragmentDialog");
+	
+	// create a default ValueHelpField
+	var oInput1 = new sap.ui.commons.ValueHelpField('VHF2',{
+		value: "{modelSumm>/sumBunkExp}",
+		width: "67px",
+/*		iconURL: "images/sap_icon.jpg",
+		iconHoverURL: "images/sap_icon.jpg",
+		iconDisabledURL: "images/sap_icon.jpg",*/
+		valueHelpRequest: function(){oDialogBunkFragment.open();}
+	});
+	
+/*	var oInput1 = new sap.ui.commons.TextField({
 		value : "{modelSumm>/sumBunkExp}",
 		editable : false,
 		width : '100%'
 			
-	});
+	});*/
 	oLabel.setLabelFor(oInput);
 	oMatrixOper.createRow(oLabel, oInput, oLabel1, oInput1);
 
@@ -247,9 +260,9 @@ var summary = function(oController){
 		change:function(oEvent){
 			var modelSumm = oController.getModel('modelSumm');
 			modelSumm.setProperty("/FoPrice",this.getValue());
-			var cons = modelSumm.getProperty("/FoCons");
+			var cons = modelSumm.getProperty("/totFoCons");
 			if(this.getValue!=undefined && this.getValue()!=''&&cons!=undefined && cons!=''){
-				modelSumm.setProperty("/FoExpense",(this.getValue()*cons));
+				modelSumm.setProperty("/totFoExpense",(this.getValue()*cons));
 			}
 			sap.ui.getCore().setModel(modelSumm, "modelSumm"); 
 			oController.sumBunkExp();
@@ -268,9 +281,9 @@ var summary = function(oController){
 		change:function(oEvent){
 			var modelSumm = oController.getModel('modelSumm');
 			modelSumm.setProperty("/DoPrice",this.getValue());
-			var cons = modelSumm.getProperty("/DoCons");
+			var cons = modelSumm.getProperty("/totDoCons");
 			if(this.getValue!=undefined && this.getValue()!=''&&cons!=undefined && cons!=''){
-				modelSumm.setProperty("/DoExpense",(this.getValue()*cons));
+				modelSumm.setProperty("/totDoExpense",(this.getValue()*cons));
 			}
 			sap.ui.getCore().setModel(modelSumm, "modelSumm"); 
 			oController.sumBunkExp();
@@ -285,7 +298,7 @@ var summary = function(oController){
 	});
 
 	var oInputCons = new sap.ui.commons.TextField("idFoCons",{
-		value : "{modelSumm>/FoCons}",
+		value : "{modelSumm>/totFoCons}",
 		editable : false,
 		width : '100%'
 	});
@@ -297,7 +310,7 @@ var summary = function(oController){
 	});
 
 	var oInput1 = new sap.ui.commons.TextField({
-		value : "{modelSumm>/DoCons}",
+		value : "{modelSumm>/totDoCons}",
 		editable : false,
 		width : '100%'
 	});
@@ -347,7 +360,7 @@ var summary = function(oController){
 		text : 'FO Expense'
 	});
 		var oInputForm = new sap.ui.commons.TextField({
-		value : "{modelSumm>/FoExpense}",
+		value : "{modelSumm>/totFoExpense}",
 		editable : false,
 		width : '100%'
 	});
@@ -357,7 +370,7 @@ var summary = function(oController){
 	});
 
 	var oInput1 = new sap.ui.commons.TextField({
-		value : "{modelSumm>/DoExpense}",
+		value : "{modelSumm>/totDoExpense}",
 		editable : false,
 		width : '100%'
 	});
@@ -373,9 +386,9 @@ var summary = function(oController){
 		change:function(oEvent){
 			var modelSumm = oController.getModel('modelSumm');
 			modelSumm.setProperty("/lsFoPrice",this.getValue());
-			var cons = modelSumm.getProperty("/lsFoCons");
+			var cons = modelSumm.getProperty("/totLsFoCons");
 			if(this.getValue!=undefined && this.getValue()!=''&&cons!=undefined && cons!=''){
-				modelSumm.setProperty("/lsFoExpense",(this.getValue()*cons));
+				modelSumm.setProperty("/totLsFoExpense",(this.getValue()*cons));
 			}
 			sap.ui.getCore().setModel(modelSumm, "modelSumm"); 
 			oController.sumBunkExp();
@@ -392,9 +405,9 @@ var summary = function(oController){
 		change:function(oEvent){
 			var modelSumm = oController.getModel('modelSumm');
 			modelSumm.setProperty("/lsDoPrice",this.getValue());
-			var cons = modelSumm.getProperty("/lsDoCons");
+			var cons = modelSumm.getProperty("/totLsDoCons");
 			if(this.getValue!=undefined && this.getValue()!=''&&cons!=undefined && cons!=''){
-				modelSumm.setProperty("/lsDoExpense",(this.getValue()*cons));
+				modelSumm.setProperty("/totLsDoExpense",(this.getValue()*cons));
 			}
 			sap.ui.getCore().setModel(modelSumm, "modelSumm"); 
 			oController.sumBunkExp();
@@ -408,7 +421,7 @@ var summary = function(oController){
 		text : 'LSFO Consumption'
 	});
 	var oInput = new sap.ui.commons.TextField({
-		value : "{modelSumm>/lsFoCons}",
+		value : "{modelSumm>/totLsFoCons}",
 		editable : false,
 		width : '100%'
 	});
@@ -418,7 +431,7 @@ var summary = function(oController){
 	});
 
 	var oInput1 = new sap.ui.commons.TextField({
-		value : "{modelSumm>/lsDoCons}",
+		value : "{modelSumm>/totLsDoCons}",
 		editable : false,
 		width : '100%'
 	});
@@ -430,7 +443,7 @@ var summary = function(oController){
 		text : 'LSFO Expense'
 	});
 	var oInput = new sap.ui.commons.TextField({
-		value : "{modelSumm>/lsFoExpense}",
+		value : "{modelSumm>/totLsFoExpense}",
 		width : '100%',
 		editable : false
 	});
@@ -440,7 +453,7 @@ var summary = function(oController){
 	});
 
 	var oInput1 = new sap.ui.commons.TextField({
-		value : "{modelSumm>/lsDoExpense}",
+		value : "{modelSumm>/totLsDoExpense}",
 		editable : false,
 		width : '100%'
 	});

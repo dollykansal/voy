@@ -49,7 +49,11 @@
 					             				new sap.ui.ux3.NavigationItem({key:"wi_est_overview",text:"Overview"}),
 					             				new sap.ui.ux3.NavigationItem({key:"wi_est_create",text:"New Estimate"})
 					              				]
-					              })   
+					              }),
+					              new sap.ui.ux3.NavigationItem("wi_voy_id",{
+					            	  key: "Voyage",
+					            	  text: "Voyage"
+					              }),
 					              ],
 /*  					  worksetItemSelected: function (e){
 						  //this.removeAllContent();
@@ -57,7 +61,6 @@
 
 						  var view = sap.ui.getCore().byId(selected);
 						  
-						  console.log("selected",selected,"view",view);
 						  if(selected == undefined){
 							  view = new sap.ui.view({
 								  id: selected,
@@ -82,7 +85,6 @@
   							oEvent.preventDefault();
   							return;
   						}
-  						console.log("workitem selected:",itemKey);
   						//console.log("content of home:",getContent(itemKey));
   						oShell.setContent(getContent(itemKey));
 						  
@@ -99,17 +101,13 @@
 				function getContent(id) {
 					if (!mContent[id]) {
 						if (id == "wi_est_overview") {
-							console.log("new view",id );
 							mContent[id] = new estDash();
 						}else if (id == "wi_est_create") {
-							console.log("new view",id );
 							mContent[id] = sap.ui.getCore().byId("estViewId");
 						}else if (id == "Home") {
-							console.log("home view",id );
 							mContent[id] = sap.ui.getCore().byId("homeViewId");
 						}
 					}else{
-						console.log("buffered view",id );
 					}
 					return mContent[id];
 				}

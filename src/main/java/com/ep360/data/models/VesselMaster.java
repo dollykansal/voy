@@ -1,5 +1,5 @@
 package com.ep360.data.models;
-// Generated Mar 6, 2015 9:55:17 PM by Hibernate Tools 4.3.1
+// Generated Mar 16, 2015 10:37:31 PM by Hibernate Tools 4.3.1
 
 
 import javax.persistence.AttributeOverride;
@@ -21,11 +21,7 @@ import javax.persistence.UniqueConstraint;
 public class VesselMaster  implements java.io.Serializable {
 
 
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -177329981889367504L;
-	private VesselMasterId id;
+     private VesselMasterId id;
      private Float laycan;
      private Float dwt;
      private String draft;

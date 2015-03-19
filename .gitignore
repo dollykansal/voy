@@ -1,2 +1,7 @@
 target/*
 target
+*.class
+*.prefs
+.classpath
+*.log
+.gitignore

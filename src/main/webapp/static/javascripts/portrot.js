@@ -94,7 +94,6 @@ var oPortTable = window.helper.createTable({
                 var data = m.getData()['modelData'];
                 var removed = data.splice(idx, 1);
                 m.setData({modelData: data});
-                console.log(removed[0]);
               } else {
                 alert("Please select a row!");
               }
@@ -104,11 +103,9 @@ var oPortTable = window.helper.createTable({
               if (idx != 0) {
                 var m = oPortTable.getModel();
                 var data = m.getData()['modelData'];
-                console.log("selected row is:",data[idx], "with index", idx);
                 var temp = data[idx-1]; //2
                 data[idx-1] = data[idx]; //3
                 data[idx]= temp; //2
-                console.log(" temp data is:",data[idx], "with index", idx);
                 m.refresh();
                 m.setData({modelData: data});
               } else {
@@ -123,11 +120,9 @@ var oPortTable = window.helper.createTable({
               if (idx != -1 && !(idx>=rowCount-1)) {
                 var m = oPortTable.getModel();
                 var data = m.getData()['modelData'];
-                console.log("selected row is:",data[idx], "with index", idx);
                 var temp = data[idx+1]; //2
                 data[idx+1] = data[idx]; //3
                 data[idx]= temp; //2
-                console.log(" temp data is:",data[idx], "with index", idx);
                 m.refresh();
                 m.setData({modelData: data});
               } else {
@@ -289,7 +284,34 @@ oPortTable.addColumn(new sap.ui.table.Column({
 //  width: "50px" }));
 
 oPortTable.addColumn(window.helper.createColumn("ldrate", "L/D Rate", "40px", "TF"));
-oPortTable.addColumn(window.helper.createColumn("portiw", "Port(I/W)", "40px", "TF"));
+
+//oPortTable.addColumn(window.helper.createColumn("idle", "Port(Idle)", "40px", "TF"));
+var oPortTableIdle = new sap.ui.commons.TextField({   
+	id: "oPortTableIdle",
+	change : function(oEvent){
+			oController.calcPortIdleWork();
+	}
+});
+oPortTableIdle.bindProperty("value", "portIdle");
+
+oPortTable.addColumn(new sap.ui.table.Column("portIdle",{
+	label: new sap.ui.commons.Label({text: "Port(Idle)"}), 
+	template: oPortTableIdle,
+	width: "40px" }));
+
+//oPortTable.addColumn(window.helper.createColumn("work", "Port(Work)", "40px", "TF"));
+var oPortTableWork = new sap.ui.commons.TextField({   
+	id: "oPortTableWork",
+	change : function(oEvent){
+			oController.calcPortIdleWork();
+	}
+});
+oPortTableWork.bindProperty("value", "portWork");
+
+oPortTable.addColumn(new sap.ui.table.Column("portWork",{
+	label: new sap.ui.commons.Label({text: "Port(Work)"}), 
+	template: oPortTableWork,
+	width: "40px" }));
 
 //oPortTable.addColumn(window.helper.createColumn("dem", "Dem", "40px", "TF"));
 var oPortTableDem = new sap.ui.commons.TextField({   
@@ -390,15 +412,12 @@ var departure = new sap.ui.table.Column({
 });
 oPortTable.addColumn(arrival);
 oPortTable.addColumn(departure);
-
-
-window.oPortTable = oPortTable;
 oPortTable.setModel(oModel);
 oPortTable.bindRows("/modelData");
 
 ///////////////////////////////set total in footer////////////////////////////////////////////////////////
 var oLblTot = new sap.ui.commons.Label({text: "Total days"});
-var oTotal = new sap.ui.commons.TextField({value: "{model>/totDays}", editable: false,width : '90%'});
+var oTotal = new sap.ui.commons.TextField({value: "{model>/netDays}", editable: false,width : '90%'});
 var oMatrix = new sap.ui.commons.layout.MatrixLayout({layoutFixed : true,width : '100%',columns : 3});
 
 oMatrix.setWidths('10%','15%', '75%');

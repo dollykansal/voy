@@ -7,6 +7,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.ep360.dao.api.DBDataService;
+import com.ep360.data.models.Demand;
 import com.ep360.data.models.VesselMaster;
 import com.ep360.data.models.VoyHeader;
 
@@ -31,6 +32,26 @@ public class DBDataServiceImpl implements DBDataService{
 				.find("from VesselMaster");
 		if (users != null && users.size() > 0) {
 			return users;
+		}
+		return null;
+	}
+
+	@Override
+	public void saveData(VoyHeader voyHeader) {
+		hibernateTemplate.saveOrUpdate(voyHeader);
+	}
+	
+	@Override
+	public void saveAllData(List<Object> entities) {
+		hibernateTemplate.saveOrUpdateAll(entities);
+	}
+
+	@Override
+	public List<Demand> getDemands() {
+		List<Demand> demands = hibernateTemplate
+				.find("from Demand");
+		if (demands != null && demands.size() > 0) {
+			return demands;
 		}
 		return null;
 	}
